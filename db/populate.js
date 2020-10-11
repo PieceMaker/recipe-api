@@ -15,7 +15,7 @@ db.recipes.insert(
             title: "Popeye's Spicy Strips",
             author: "Popeye",
             published: new Date(),
-            reipe: "Ingredients and procedures for cooking Popeye's strips.",
+            recipe: "Ingredients and procedures for cooking Popeye's strips.",
             description: "How to cook the world's best spicy chicken strips."
         }
     ]
