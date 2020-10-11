@@ -2,7 +2,7 @@
 //
 // mongo localhost:27017/recipes db/populate.js
 
-db.recipes.insert(
+db.recipes.insertMany(
     [
         {
             title: "Family Recipe",
