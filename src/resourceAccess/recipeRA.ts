@@ -1,5 +1,5 @@
 // Modules
-import { Db, MongoClient } from 'mongodb';
+import { Db, MongoClient, ObjectID } from 'mongodb';
 import config from '../config';
 
 // Types and Interfaces
@@ -11,7 +11,7 @@ class RecipeRA {
     public async load(id: string): Promise<Recipe> {
         const [ recipe ] = await this.db
             .collection('recipes')
-            .find<Recipe>({"_id": id})
+            .find<Recipe>({"_id": ObjectID.createFromHexString(id)})
             .toArray();
         return recipe;
     }
