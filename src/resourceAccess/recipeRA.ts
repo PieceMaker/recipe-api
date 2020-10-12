@@ -1,22 +1,22 @@
 // Modules
-import { MongoClient } from 'mongodb';
+import { Db, MongoClient } from 'mongodb';
 import config from '../config';
 
 class RecipeRA {
-    private client: MongoClient;
+    private db: Db;
 
     public initialize(): Promise<void> {
-        if(!this.client) {
-            return new Promise<MongoClient>((resolve, reject) => {
+        if(!this.db) {
+            return new Promise<Db>((resolve, reject) => {
                 MongoClient.connect(config.mongo.url, (error, client) => {
                     if (error) {
                         reject(error);
                     }
-                    resolve(client);
+                    resolve(client.db(config.mongo.db));
                 });
             })
-                .then((client) => {
-                    this.client = client;
+                .then((db) => {
+                    this.db = db;
                 });
         }
         return Promise.resolve();
