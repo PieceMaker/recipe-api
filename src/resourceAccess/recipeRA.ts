@@ -2,8 +2,19 @@
 import { Db, MongoClient } from 'mongodb';
 import config from '../config';
 
+// Types and Interfaces
+import { Recipe } from '../interfaces/recipe';
+
 class RecipeRA {
     private db: Db;
+
+    public async load(id: string): Promise<Recipe> {
+        const [ recipe ] = await this.db
+            .collection('recipes')
+            .find<Recipe>({"_id": id})
+            .toArray();
+        return recipe;
+    }
 
     public initialize(): Promise<void> {
         if(!this.db) {
