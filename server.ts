@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { load } from "./src/managers/recipeManager";
+import { load, search } from "./src/managers/recipeManager";
 
 const app = express();
 const port = 8000;
@@ -22,12 +22,24 @@ app.get('/load/:id', async (req, res) => {
     }
 });
 
-app.get('/search/:pattern/:page', (req, res) => {
-    res.status(400).send('/search/:pattern/:page not yet implemented.');
+app.get('/search/:pattern/:page', async (req, res) => {
+    try {
+        const { pattern, page } = req.params;
+        const searchResult = await search(pattern, parseInt(page, 10));
+        res.status(200).send(searchResult);
+    } catch(error) {
+        res.status(400).send(error);
+    }
 });
 
-app.get('/search/:pattern', (req, res) => {
-    res.status(400).send('/search/:pattern not yet implemented.');
+app.get('/search/:pattern', async (req, res) => {
+    try {
+        const { pattern } = req.params;
+        const searchResult = await search(pattern, 1);
+        res.status(200).send(searchResult);
+    } catch(error) {
+        res.status(400).send(error);
+    }
 });
 
 ////////
