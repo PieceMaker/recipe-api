@@ -3,7 +3,7 @@ import { Db, MongoClient, ObjectID } from 'mongodb';
 import config from '../config';
 
 // Types and Interfaces
-import { Recipe } from '../interfaces/recipe';
+import { Recipe } from '../types/recipe';
 
 class RecipeRA {
     private db: Db;
