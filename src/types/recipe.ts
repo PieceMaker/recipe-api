@@ -1,3 +1,5 @@
+import { integer } from "./integer";
+
 export interface BaseRecipe {
     title: string;
     author: string;
@@ -18,4 +20,9 @@ export interface Recipe extends NewRecipe {
 
 export interface SummaryRecipe extends BaseRecipe {
     id: string;
+}
+
+export interface SearchResult {
+    count: integer;
+    recipes: Recipe[];
 }
