@@ -1,5 +1,7 @@
 import express from 'express';
 
+import { load } from "./src/managers/recipeManager";
+
 const app = express();
 const port = 8000;
 
@@ -11,8 +13,13 @@ app.get('/', (req, res) => {
     res.send('It\'s an express server.');
 });
 
-app.get('/load/:id', (req, res) => {
-    res.status(400).send('/load/:id not yet implemented.');
+app.get('/load/:id', async (req, res) => {
+    try {
+        const recipe = await load(req.params.id);
+        res.status(200).send(recipe);
+    } catch(error) {
+        res.status(400).send(error);
+    }
 });
 
 app.get('/search/:pattern/:page', (req, res) => {
