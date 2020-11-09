@@ -5,7 +5,7 @@
   "main": "server.ts",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/server.js",
+    "start": "npm run build && node dist/server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "tsc -w"
   },
@@ -24,8 +24,13 @@
     "mongodb": "^3.6.2"
   },
   "devDependencies": {
+    "@types/chai": "^4.2.14",
     "@types/express": "^4.17.8",
+    "@types/mocha": "^8.0.3",
     "@types/mongodb": "^3.5.27",
+    "axios": "^0.21.0",
+    "chai": "^4.2.0",
+    "mocha": "^8.2.0",
     "ts-node": "^9.0.0",
     "typescript": "^4.0.3"
   }
