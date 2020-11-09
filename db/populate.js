@@ -5,6 +5,7 @@
 db.recipes.insertMany(
     [
         {
+            _id: ObjectId("5fa8a136a26e5309eeda546b"),
             title: "Family Recipe",
             author: "Your mom",
             published: new Date(),
@@ -12,6 +13,7 @@ db.recipes.insertMany(
             description: "A delectable recipe for a dish your mom always cooks."
         },
         {
+            _id: ObjectId("5fa8a511460dae6b34c2dee7"),
             title: "Popeye's Spicy Strips",
             author: "Popeye",
             published: new Date(),
