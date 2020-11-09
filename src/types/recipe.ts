@@ -8,7 +8,7 @@ export interface BaseRecipe {
 }
 
 export interface NewRecipe extends BaseRecipe {
-    published: Date;
+    published: Date | string;
     recipe: string;
     updated?: Date;
     url?: string
@@ -16,6 +16,10 @@ export interface NewRecipe extends BaseRecipe {
 
 export interface Recipe extends NewRecipe {
     id: string;
+}
+
+export interface MongoRecipe extends NewRecipe {
+    _id: string;
 }
 
 export interface SummaryRecipe extends BaseRecipe {
