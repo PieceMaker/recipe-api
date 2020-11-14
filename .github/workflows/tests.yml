@@ -1,0 +1,32 @@
+name: Run tests
+on: [ push, pull_request ]
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Git checkout
+        uses: actions/checkout@v1
+
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+
+      - name: Start MongoDB 4.4.x
+        uses: supercharge/mongodb-github-action@1.2.0
+        with:
+          mongodb-version: 4.4
+
+      - name: Install MongoDB clients
+        run: sudo apt install mongodb-clients
+
+      - name: Create database
+        run: mongo localhost:27017/recipes db/create.js
+
+      - name: Populate database
+        run: mongo localhost:27017/recipes db/populate.js
+
+      - run: npm install
+
+      - run: npm test
