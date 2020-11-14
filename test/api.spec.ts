@@ -1,22 +1,8 @@
 import axios from 'axios';
-import config from '../src/config';
-import { Db, MongoClient } from "mongodb";
 import { expect } from 'chai';
 import { recipes } from '../db/data/recipes';
 
 describe('API', function() {
-
-    before(async function() {
-        const db = await new Promise<Db>((resolve, reject) => {
-            MongoClient.connect(config.mongo.url, (error, client) => {
-                if(error) {
-                    reject(error);
-                }
-                resolve(client.db(config.mongo.db));
-            });
-        });
-        this.db = db;
-    });
 
     describe('Load', function() {
 
