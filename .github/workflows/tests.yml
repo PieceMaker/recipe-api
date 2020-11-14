@@ -19,7 +19,7 @@ jobs:
           mongodb-version: 4.4
 
       - name: Install MongoDB clients
-        run: sudo apt install mongodb-clients
+        run: sudo apt-get update && sudo apt-get install mongodb-clients -y
 
       - name: Create database
         run: mongo localhost:27017/recipes db/create.js
