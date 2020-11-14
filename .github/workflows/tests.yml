@@ -28,6 +28,6 @@ jobs:
 
       - run: npm run build
 
-      - run: nohup node dist/server
+      - run: nohup node dist/server &
 
       - run: npm test
