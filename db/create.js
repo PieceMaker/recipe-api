@@ -10,9 +10,9 @@ db.createCollection( "recipes", {
             properties: {
                 title: { bsonType: "string" },
                 author: { bsonType: "string" },
-                published: { bsonType: "date" },
+                published: { bsonType: [ "date", "string" ] },
                 recipe: { bsonType: "string" },
-                updated: { bsonType: "date" },
+                updated: { bsonType: [ "date", "string" ] },
                 image: { bsonType: "string" },
                 description: { bsonType: "string" },
                 url: { bsonType: "string" }

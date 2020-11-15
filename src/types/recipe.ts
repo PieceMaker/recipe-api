@@ -10,7 +10,7 @@ export interface BaseRecipe {
 export interface NewRecipe extends BaseRecipe {
     published: Date | string;
     recipe: string;
-    updated?: Date;
+    updated?: Date | string;
     url?: string
 }
 
