@@ -2,19 +2,19 @@ import axios from 'axios';
 import config from '../src/config';
 import { expect } from 'chai';
 import { recipes } from '../db/data/recipes';
-import { MongoRecipe, Recipe, SearchResult } from "../src/types/recipe";
+import { Recipe, SearchResult } from "../src/types/recipe";
 import { integer } from "../src/types/integer";
 
 const commonSearchTerm = 'a';
 const mothersId = '5fa8a136a26e5309eeda546b';
 const popeyesId = '5fa8a511460dae6b34c2dee7';
-const mothersRecipe = recipes.find(recipe => recipe._id === mothersId);
-const popeyesRecipe = recipes.find(recipe => recipe._id === popeyesId);
+const mothersRecipe = recipes.find(recipe => recipe.id === mothersId);
+const popeyesRecipe = recipes.find(recipe => recipe.id === popeyesId);
 
-const sortById = function(recipe1: MongoRecipe, recipe2: MongoRecipe): integer {
-    if(recipe1._id < recipe2._id)
+const sortById = function(recipe1: Recipe, recipe2: Recipe): integer {
+    if(recipe1.id < recipe2.id)
         return -1;
-    if(recipe1._id > recipe2._id)
+    if(recipe1.id > recipe2.id)
         return 1;
     return 0;
 }

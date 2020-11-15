@@ -1,8 +1,8 @@
-import { MongoRecipe } from "../../src/types/recipe";
+import { Recipe } from "../../src/types/recipe";
 
-export const recipes: MongoRecipe[] =  [
+export const recipes: Recipe[] =  [
   {
-    _id: "5fa8a136a26e5309eeda546b",
+    id: "5fa8a136a26e5309eeda546b",
     title: "Family Recipe",
     author: "Your mom",
     published: "1776-07-04T12:00:00.000Z",
@@ -10,7 +10,7 @@ export const recipes: MongoRecipe[] =  [
     description: "A delectable recipe for a dish your mom always cooks."
   },
   {
-    _id: "5fa8a511460dae6b34c2dee7",
+    id: "5fa8a511460dae6b34c2dee7",
     title: "Popeye's Spicy Strips",
     author: "Popeye",
     published: "1972-06-12T12:00:00.000Z",
@@ -18,7 +18,7 @@ export const recipes: MongoRecipe[] =  [
     description: "How to cook the world's best spicy chicken strips."
   },
   {
-    _id: "5fb0754318c0a72e04331f96",
+    id: "5fb0754318c0a72e04331f96",
     title: "Steak Pizzaiola",
     author: "Marie Barone",
     published: "1925-11-24T12:00:00.000Z",
@@ -26,7 +26,7 @@ export const recipes: MongoRecipe[] =  [
     description: "Steak dish commonly served in Everybody Loves Raymond."
   },
   {
-    _id: "5fb07613579f6de7d881be56",
+    id: "5fb07613579f6de7d881be56",
     title: "Chicken Fettuccine Alfredo",
     author: "Food Network",
     published: "2018-04-27T12:00:00.000Z",
@@ -34,7 +34,7 @@ export const recipes: MongoRecipe[] =  [
     url: "https://www.foodnetwork.com/recipes/food-network-kitchen/chicken-fettuccine-alfredo-3364118"
   },
   {
-    _id: "5fb0770e7dad2283a7ffd335",
+    id: "5fb0770e7dad2283a7ffd335",
     title: "Butter Chicken",
     author: "Anonymous",
     published: "2018-08-12T12:00:00.000Z",
@@ -42,7 +42,7 @@ export const recipes: MongoRecipe[] =  [
     description: "Heaven in your mouth."
   },
   {
-    _id: "5fb0778fe809db7536b3b67d",
+    id: "5fb0778fe809db7536b3b67d",
     title: "Stuffed Bell Peppers",
     author: "Colleen Case",
     published: "2034-01-05T12:00:00.000Z",
@@ -50,7 +50,7 @@ export const recipes: MongoRecipe[] =  [
     description: "Baked red bell peppers stuffed with filling"
   },
   {
-    _id: "5fb0788ab03235a70e65c4c0",
+    id: "5fb0788ab03235a70e65c4c0",
     title: "Tacos",
     author: "Maria Reina",
     published: "2011-10-10T12:00:00.000Z",
@@ -58,7 +58,7 @@ export const recipes: MongoRecipe[] =  [
     description: "Tacos. 'Nuff said."
   },
   {
-    _id: "5fb079151ba2603ac52fb1a0",
+    id: "5fb079151ba2603ac52fb1a0",
     title: "Noodles",
     author: "Family Recipe",
     published: "1952-12-25T12:00:00.000Z",
@@ -67,7 +67,7 @@ export const recipes: MongoRecipe[] =  [
     description: "Homemade egg noodles."
   },
   {
-    _id: "5fb080ec80ca03cc9b8ffce6",
+    id: "5fb080ec80ca03cc9b8ffce6",
     title: "Cup o' Noodles",
     author: "Maruchan",
     published: "1999-03-01T12:00:00.000Z",
@@ -75,14 +75,14 @@ export const recipes: MongoRecipe[] =  [
     description: "Classic college meal."
   },
   {
-    _id: "5fb0810f2761a4d66c237ace",
+    id: "5fb0810f2761a4d66c237ace",
     title: "PB&J Sandwich",
     author: "Unknown",
     published: "0001-01-01T12:00:00.000Z",
     recipe: "Let's face it. You know how to make one of these."
   },
   {
-    _id: "5fb08173f228f41f39684348",
+    id: "5fb08173f228f41f39684348",
     title: "Chicken Noodle Soup",
     author: "Unknown",
     published: "0001-01-01T12:00:00.000Z",
@@ -90,14 +90,14 @@ export const recipes: MongoRecipe[] =  [
     description: "Classic sick food."
   },
   {
-    _id: "5fb08187cd229e1e143d2fdd",
+    id: "5fb08187cd229e1e143d2fdd",
     title: "Boiled Egg",
     author: "Unknown",
     published: "0001-01-01T12:00:00.000Z",
     recipe: "Place egg in boiling water. Boil for 15 minutes. Peel and serve."
   },
   {
-    _id: "5fb0819827bc7f05e213ad2a",
+    id: "5fb0819827bc7f05e213ad2a",
     title: "Whataburger",
     author: "Whataburger",
     published: "1950-08-08T12:00:00.000Z",
@@ -105,7 +105,7 @@ export const recipes: MongoRecipe[] =  [
     description: "Classic Texas drunk food."
   },
   {
-    _id: "5fb081ae0123d89b8d9d852f",
+    id: "5fb081ae0123d89b8d9d852f",
     title: "Meatloaf",
     author: "Unknown",
     published: "1929-10-29T12:00:00.000Z",
@@ -113,7 +113,7 @@ export const recipes: MongoRecipe[] =  [
     description: "Nasty crap."
   },
   {
-    _id: "5fb081beb98cfe9f81d9f9a5",
+    id: "5fb081beb98cfe9f81d9f9a5",
     title: "Margarita",
     author: "Unknown",
     published: "1836-03-02T12:00:00.000Z",
