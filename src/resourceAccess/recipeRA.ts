@@ -1,10 +1,11 @@
 // Modules
 import { Db, MongoClient, ObjectID } from 'mongodb';
 import config from '../config';
+import { fromMongoRecipe } from "../engines/formattingEngine";
 
 // Types and Interfaces
 import { integer } from "../types/integer";
-import { Recipe, SearchResult } from '../types/recipe';
+import { MongoRecipe, Recipe, SearchResult } from '../types/recipe';
 
 class RecipeRA {
     private db: Db;
@@ -12,9 +13,9 @@ class RecipeRA {
     public async load(id: string): Promise<Recipe> {
         const [ recipe ] = await this.db
             .collection('recipes')
-            .find<Recipe>({"_id": ObjectID.createFromHexString(id)})
+            .find<MongoRecipe>({"_id": ObjectID.createFromHexString(id)})
             .toArray();
-        return recipe;
+        return fromMongoRecipe(recipe);
     }
 
     public async search(pattern: string, page: integer): Promise<SearchResult> {
@@ -23,7 +24,7 @@ class RecipeRA {
         const rowsToSkip = config.documentsPerPage * (page - 1);
         const recipesCursor = await this.db
             .collection('recipes')
-            .find<Recipe>({
+            .find<MongoRecipe>({
                 "$or": [
                     {title: likePatternRegex},
                     {recipe: likePatternRegex},
@@ -36,7 +37,7 @@ class RecipeRA {
         ]);
         return {
             count,
-            recipes
+            recipes: recipes.map(fromMongoRecipe)
         };
     }
 
