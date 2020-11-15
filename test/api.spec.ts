@@ -1,9 +1,11 @@
 import axios from 'axios';
+import config from '../src/config';
 import { expect } from 'chai';
 import { recipes } from '../db/data/recipes';
-import {MongoRecipe, Recipe, SearchResult} from "../src/types/recipe";
+import { MongoRecipe, Recipe, SearchResult } from "../src/types/recipe";
 import { integer } from "../src/types/integer";
 
+const commonSearchTerm = 'a';
 const mothersId = '5fa8a136a26e5309eeda546b';
 const popeyesId = '5fa8a511460dae6b34c2dee7';
 const mothersRecipe = recipes.find(recipe => recipe._id === mothersId);
@@ -20,8 +22,9 @@ const apiLoad = function (id: string): Promise<Recipe> {
     return axios.get(`http://localhost:8000/load/${id}`)
         .then(({ data }) => data);
 }
-const apiSearch = function(searchTerm: string | undefined): Promise<SearchResult> {
-    return axios.get<SearchResult>(`http://localhost:8000/search/${searchTerm}`)
+const apiSearch = function(searchTerm: string | undefined, page?: integer): Promise<SearchResult> {
+    const url = `http://localhost:8000/search/${searchTerm}` + (page ? `/${page}` : '');
+    return axios.get<SearchResult>(url)
         .then(({ data }) => data);
 }
 
@@ -70,12 +73,30 @@ describe('API', function() {
         });
 
         it('should search using "like" comparison', async function() {
-            const commonSearchTerm = 'a';
             const searchResult = await apiSearch(commonSearchTerm);
             expect(searchResult.count).to.equal(recipes.length);
             const sortedRecipes = recipes.sort(sortById);
             const sortedAPIRecipes = recipes.sort(sortById);
             expect(sortedAPIRecipes).to.eql(sortedRecipes);
+        });
+
+        it('should return result set of size equal to the configured documents per page on the first page', async function() {
+            const firstPage = await apiSearch(commonSearchTerm, 1);
+            expect(
+                firstPage.count,
+                'Even though results are paginated, count should be size of full result set'
+            ).to.equal(recipes.length);
+            expect(firstPage.recipes).to.have.lengthOf(config.documentsPerPage);
+        });
+
+        it('should return remaining recipes when requesting second page', async function() {
+            const secondPage = await apiSearch(commonSearchTerm, 2);
+            expect(
+                secondPage.count,
+                'Even though results are paginated, count should be size of full result set'
+            ).to.equal(recipes.length);
+            const numRemainingRecipes = recipes.length % config.documentsPerPage;
+            expect(secondPage.recipes).to.have.lengthOf(numRemainingRecipes);
         });
 
     });
