@@ -20,6 +20,7 @@ class RecipeRA {
     public async search(pattern: string, page: integer): Promise<SearchResult> {
         const likePattern = `.*${pattern}.*`;
         const likePatternRegex = new RegExp(likePattern);
+        const rowsToSkip = config.documentsPerPage * (page - 1);
         const recipesCursor = await this.db
             .collection('recipes')
             .find<Recipe>({
@@ -31,7 +32,7 @@ class RecipeRA {
             });
         const [ count, recipes ] = await Promise.all([
             recipesCursor.count(),
-            recipesCursor.limit(config.documentsPerPage).toArray()
+            recipesCursor.skip(rowsToSkip).limit(config.documentsPerPage).toArray()
         ]);
         return {
             count,
