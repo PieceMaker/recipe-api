@@ -4,7 +4,11 @@ import recipeRA from '../resourceAccess/recipeRA';
 
 // Interfaces
 import { integer } from "../types/integer";
-import { Recipe, SearchResult } from "../types/recipe";
+import { NewRecipe, Recipe, SearchResult } from "../types/recipe";
+
+export function insert (recipe: NewRecipe): Promise<string> {
+    return recipeRA.insert(recipe);
+}
 
 export function load (id: string): Promise<Recipe> {
     return recipeRA.load(id);

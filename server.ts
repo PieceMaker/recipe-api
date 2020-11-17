@@ -1,9 +1,12 @@
 import express from 'express';
 
-import { load, search } from "./src/managers/recipeManager";
+import { insert, load, search } from "./src/managers/recipeManager";
+import {NewRecipe} from "./src/types/recipe";
 
 const app = express();
 const port = 8000;
+
+app.use(express.json());
 
 ////////
 // GET
@@ -54,9 +57,15 @@ app.post('/logout', (req, res) => {
     res.status(400).send('/logout not yet implemented.');
 });
 
-app.post('/insert', (req, res) => {
-    res.status(400).send('/insert not yet implemented.');
-})
+app.post('/insert', async (req, res) => {
+    try {
+        const recipe: NewRecipe = req.body;
+        const insertedId = await insert(recipe);
+        res.status(200).send(insertedId);
+    } catch(error) {
+        res.status(400).send(error.message);
+    }
+});
 
 ////////
 // PUT

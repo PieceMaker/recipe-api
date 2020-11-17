@@ -5,10 +5,17 @@ import { fromMongoRecipe } from "../engines/formattingEngine";
 
 // Types and Interfaces
 import { integer } from "../types/integer";
-import { MongoRecipe, Recipe, SearchResult } from '../types/recipe';
+import { MongoRecipe, NewRecipe, Recipe, SearchResult } from '../types/recipe';
 
 class RecipeRA {
     private db: Db;
+
+    public async insert(recipe: NewRecipe): Promise<string> {
+        const { insertedId } = await this.db
+            .collection('recipes')
+            .insertOne(recipe);
+        return insertedId;
+    }
 
     public async load(id: string): Promise<Recipe> {
         const [ recipe ] = await this.db
