@@ -1,8 +1,9 @@
 import axios from 'axios';
 import config from '../src/config';
+import { Db, DeleteWriteOpResultObject, MongoClient, ObjectId } from "mongodb";
 import { expect } from 'chai';
 import { recipes } from '../db/data/recipes';
-import { Recipe, SearchResult } from "../src/types/recipe";
+import {NewRecipe, Recipe, SearchResult} from "../src/types/recipe";
 import { integer } from "../src/types/integer";
 
 const commonSearchTerm = 'a';
@@ -10,7 +11,18 @@ const mothersId = '5fa8a136a26e5309eeda546b';
 const popeyesId = '5fa8a511460dae6b34c2dee7';
 const mothersRecipe = recipes.find(recipe => recipe.id === mothersId);
 const popeyesRecipe = recipes.find(recipe => recipe.id === popeyesId);
+const newRecipe = {
+    title: 'New Title',
+    author: 'New Author',
+    published: new Date(),
+    recipe: 'New recipe'
+};
 
+const deleteById = function(db: Db, id: string): Promise<DeleteWriteOpResultObject> {
+    return db
+        .collection('recipes')
+        .deleteOne({ _id: new ObjectId(id) });
+}
 const sortById = function(recipe1: Recipe, recipe2: Recipe): integer {
     if(recipe1.id < recipe2.id)
         return -1;
@@ -18,7 +30,11 @@ const sortById = function(recipe1: Recipe, recipe2: Recipe): integer {
         return 1;
     return 0;
 }
-const apiLoad = function (id: string): Promise<Recipe> {
+const apiInsert = function(recipe: NewRecipe): Promise<string> {
+    return axios.post('http://localhost:8000/insert', recipe)
+        .then(({ data }) => data);
+}
+const apiLoad = function(id: string): Promise<Recipe> {
     return axios.get(`http://localhost:8000/load/${id}`)
         .then(({ data }) => data);
 }
@@ -28,7 +44,7 @@ const apiSearch = function(searchTerm: string | undefined, page?: integer): Prom
         .then(({ data }) => data);
 }
 
-describe('API', function() {
+describe('Read', function() {
 
     describe('Load', function() {
 
@@ -97,6 +113,37 @@ describe('API', function() {
             ).to.equal(recipes.length);
             const numRemainingRecipes = recipes.length % config.documentsPerPage;
             expect(secondPage.recipes).to.have.lengthOf(numRemainingRecipes);
+        });
+
+    });
+
+});
+
+describe('Write', function() {
+
+    before(async function() {
+        const db = await new Promise<Db>((resolve, reject) => {
+            MongoClient.connect(config.mongo.url, (error, client) => {
+                if(error) {
+                    reject(error);
+                }
+                resolve(client.db(config.mongo.db));
+            });
+        });
+        this.db = db;
+    });
+
+    describe('Insert', async function() {
+
+        it('should insert a new recipe', async function() {
+            const id = await apiInsert(newRecipe);
+            expect(id).to.have.lengthOf(24);
+
+            // try {
+                await deleteById(this.db, id);
+            // } catch(error) {
+            //     // Do nothing
+            // }
         });
 
     });
