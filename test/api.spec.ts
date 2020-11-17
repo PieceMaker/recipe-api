@@ -139,11 +139,11 @@ describe('Write', function() {
             const id = await apiInsert(newRecipe);
             expect(id).to.have.lengthOf(24);
 
-            // try {
+            try {
                 await deleteById(this.db, id);
-            // } catch(error) {
-            //     // Do nothing
-            // }
+            } catch(error) {
+                // Do nothing
+            }
         });
 
     });
