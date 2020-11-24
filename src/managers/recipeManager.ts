@@ -18,3 +18,8 @@ export function search (pattern: string, page: integer): Promise<SearchResult> {
     const escapedPattern = escapePattern(pattern);
     return recipeRA.search(escapedPattern, page);
 }
+
+export function update(recipe: Recipe): Promise<{modifiedCount: integer, upsertedCount: integer}> {
+    const {id, ...rest} = recipe;
+    return recipeRA.update(id, rest);
+}

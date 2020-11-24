@@ -48,6 +48,13 @@ class RecipeRA {
         };
     }
 
+    public async update(id: string, recipe: NewRecipe): Promise<{modifiedCount:integer, upsertedCount: integer}> {
+        const {modifiedCount, upsertedCount} = await this.db
+            .collection('recipes')
+            .updateOne({"_id": ObjectID.createFromHexString(id)}, recipe);
+        return {modifiedCount, upsertedCount};
+    }
+
     public initialize(): Promise<void> {
         if(!this.db) {
             return new Promise<Db>((resolve, reject) => {
