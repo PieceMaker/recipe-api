@@ -30,3 +30,8 @@ export interface SearchResult {
     count: integer;
     recipes: Recipe[];
 }
+
+export interface UpdateResult {
+    modifiedCount: integer;
+    upsertedCount: integer;
+}

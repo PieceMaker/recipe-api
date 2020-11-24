@@ -5,7 +5,7 @@ import { fromMongoRecipe } from "../engines/formattingEngine";
 
 // Types and Interfaces
 import { integer } from "../types/integer";
-import { MongoRecipe, NewRecipe, Recipe, SearchResult } from '../types/recipe';
+import { MongoRecipe, NewRecipe, Recipe, SearchResult, UpdateResult } from '../types/recipe';
 
 class RecipeRA {
     private db: Db;
@@ -48,7 +48,7 @@ class RecipeRA {
         };
     }
 
-    public async update(id: string, recipe: NewRecipe): Promise<{modifiedCount:integer, upsertedCount: integer}> {
+    public async update(id: string, recipe: NewRecipe): Promise<UpdateResult> {
         const {modifiedCount, upsertedCount} = await this.db
             .collection('recipes')
             .updateOne({"_id": ObjectID.createFromHexString(id)}, recipe);
