@@ -5,7 +5,7 @@ import { fromMongoRecipe } from "../engines/formattingEngine";
 
 // Types and Interfaces
 import { integer } from "../types/integer";
-import { MongoRecipe, NewRecipe, Recipe, SearchResult } from '../types/recipe';
+import { MongoRecipe, NewRecipe, Recipe, SearchResult, UpdateResult } from '../types/recipe';
 
 class RecipeRA {
     private db: Db;
@@ -46,6 +46,13 @@ class RecipeRA {
             count,
             recipes: recipes.map(fromMongoRecipe)
         };
+    }
+
+    public async update(id: string, recipe: NewRecipe): Promise<UpdateResult> {
+        const {modifiedCount} = await this.db
+            .collection('recipes')
+            .updateOne({"_id": ObjectID.createFromHexString(id)}, { $set: recipe });
+        return {modifiedCount};
     }
 
     public initialize(): Promise<void> {

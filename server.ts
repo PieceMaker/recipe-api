@@ -1,7 +1,7 @@
 import express from 'express';
 
-import { insert, load, search } from "./src/managers/recipeManager";
-import {NewRecipe} from "./src/types/recipe";
+import {insert, load, search, update} from "./src/managers/recipeManager";
+import { NewRecipe, Recipe } from "./src/types/recipe";
 
 const app = express();
 const port = 8000;
@@ -71,8 +71,14 @@ app.post('/insert', async (req, res) => {
 // PUT
 ////////
 
-app.put('/update/:id', (req, res) => {
-    res.status(400).send('/update/:id not yet implemented.');
+app.put('/update', async (req, res) => {
+    try {
+        const recipe: Recipe = req.body;
+        const updateResponse = await update(recipe);
+        res.status(200).send(updateResponse);
+    } catch(error) {
+        res.status(400).send(error.message);
+    }
 });
 
 ////////

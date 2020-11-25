@@ -122,6 +122,13 @@ db.recipes.insertMany(
             published: "1836-03-02T12:00:00.000Z",
             recipe: "A drink with a 3:2:1 ratio. Three parts good tequila, two parts orange liqueur, one part lime juice. Shake and strain.",
             description: "A perfect drink to enjoy on a spring evening on the porch while watching storms in the distance."
+        },
+        {
+            _id: ObjectId("5fbc8fc69cf7d393d946bb8b"),
+            title: "Recipe to be updated",
+            author: "System",
+            published: "2020-03-01T12:00:00.000Z",
+            recipe: "Recipe to be updated"
         }
     ]
 )

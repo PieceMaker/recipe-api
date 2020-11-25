@@ -1,16 +1,20 @@
 import axios from 'axios';
+import Chance from 'chance';
+const chance = new Chance();
 import config from '../src/config';
-import { Db, DeleteWriteOpResultObject, MongoClient, ObjectId } from "mongodb";
+import { Db, DeleteWriteOpResultObject, MongoClient, ObjectId, UpdateWriteOpResult } from "mongodb";
 import { expect } from 'chai';
 import { recipes } from '../db/data/recipes';
-import {NewRecipe, Recipe, SearchResult} from "../src/types/recipe";
+import { NewRecipe, Recipe, SearchResult, UpdateResult } from "../src/types/recipe";
 import { integer } from "../src/types/integer";
 
 const commonSearchTerm = 'a';
 const mothersId = '5fa8a136a26e5309eeda546b';
 const popeyesId = '5fa8a511460dae6b34c2dee7';
+const updateId = '5fbc8fc69cf7d393d946bb8b';
 const mothersRecipe = recipes.find(recipe => recipe.id === mothersId);
 const popeyesRecipe = recipes.find(recipe => recipe.id === popeyesId);
+const updateRecipe = recipes.find(recipe => recipe.id === updateId);
 const newRecipe = {
     title: 'New Title',
     author: 'New Author',
@@ -22,6 +26,11 @@ const deleteById = function(db: Db, id: string): Promise<DeleteWriteOpResultObje
     return db
         .collection('recipes')
         .deleteOne({ _id: new ObjectId(id) });
+}
+const updateById = function(db: Db, id: string, recipe: Recipe): Promise<UpdateWriteOpResult> {
+    return db
+        .collection('recipes')
+        .updateOne({ _id: new ObjectId(recipe.id) }, { $set: recipe });
 }
 const sortById = function(recipe1: Recipe, recipe2: Recipe): integer {
     if(recipe1.id < recipe2.id)
@@ -41,6 +50,10 @@ const apiLoad = function(id: string): Promise<Recipe> {
 const apiSearch = function(searchTerm: string | undefined, page?: integer): Promise<SearchResult> {
     const url = `http://localhost:8000/search/${searchTerm}` + (page ? `/${page}` : '');
     return axios.get<SearchResult>(url)
+        .then(({ data }) => data);
+}
+const apiUpdate = function(recipe: Recipe): Promise<UpdateResult> {
+    return axios.put<UpdateResult>('http://localhost:8000/update', recipe)
         .then(({ data }) => data);
 }
 
@@ -133,7 +146,7 @@ describe('Write', function() {
         this.db = db;
     });
 
-    describe('Insert', async function() {
+    describe('Insert', function() {
 
         it('should insert a new recipe', async function() {
             const id = await apiInsert(newRecipe);
@@ -143,6 +156,45 @@ describe('Write', function() {
                 await deleteById(this.db, id);
             } catch(error) {
                 // Do nothing
+            }
+        });
+
+    });
+
+    describe('Update', function() {
+
+        it('should return that zero records were modified if saving same record', async function() {
+            if(updateRecipe) {
+                const { modifiedCount } = await apiUpdate(updateRecipe);
+                expect(modifiedCount).to.equal(0);
+            } else {
+                expect(
+                    updateRecipe,
+                    'We were unable to locate the update recipe'
+                ).to.not.be.undefined;
+            }
+        });
+
+        it('should return that one record was modified if modifying record', async function() {
+            try {
+                if (updateRecipe) {
+                    const author = chance.name();
+                    const modifiedRecipe = {
+                        ...updateRecipe,
+                        author
+                    };
+                    const {modifiedCount} = await apiUpdate(modifiedRecipe);
+                    expect(modifiedCount).to.equal(1);
+                } else {
+                    expect(
+                        updateRecipe,
+                        'We were unable to locate the update recipe'
+                    ).to.not.be.undefined;
+                }
+            } finally {
+                if(updateRecipe) {
+                    await updateById(this.db, updateId, updateRecipe);
+                }
             }
         });
 
