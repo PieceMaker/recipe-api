@@ -33,5 +33,4 @@ export interface SearchResult {
 
 export interface UpdateResult {
     modifiedCount: integer;
-    upsertedCount: integer;
 }
