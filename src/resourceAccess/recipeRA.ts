@@ -51,7 +51,7 @@ class RecipeRA {
     public async update(id: string, recipe: NewRecipe): Promise<UpdateResult> {
         const {modifiedCount, upsertedCount} = await this.db
             .collection('recipes')
-            .updateOne({"_id": ObjectID.createFromHexString(id)}, recipe);
+            .updateOne({"_id": ObjectID.createFromHexString(id)}, { $set: recipe });
         return {modifiedCount, upsertedCount};
     }
 
