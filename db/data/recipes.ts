@@ -122,9 +122,9 @@ export const recipes: Recipe[] =  [
   },
   {
     id: "5fbc8fc69cf7d393d946bb8b",
-    title: "Recipe to be modified",
+    title: "Recipe to be updated",
     author: "System",
     published: "2020-03-01T12:00:00.000Z",
-    recipe: "Recipe to be modified"
+    recipe: "Recipe to be updated"
   }
 ];
