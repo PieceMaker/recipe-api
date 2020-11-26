@@ -1,6 +1,6 @@
 import express from 'express';
 
-import {insert, load, search, update} from "./src/managers/recipeManager";
+import {insert, load, remove, search, update} from "./src/managers/recipeManager";
 import { NewRecipe, Recipe } from "./src/types/recipe";
 
 const app = express();
@@ -85,8 +85,14 @@ app.put('/update', async (req, res) => {
 // DELETE
 ////////
 
-app.delete('/delete/:id', (req, res) => {
-    res.status(400).send('/delete/:id not yet implemented.');
+app.delete('/delete/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deleteResponse = await remove(id);
+        res.status(200).send(deleteResponse);
+    } catch(error) {
+        res.status(400).send(error.message);
+    }
 });
 
 ////////

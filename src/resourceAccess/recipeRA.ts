@@ -10,6 +10,13 @@ import { MongoRecipe, NewRecipe, Recipe, SearchResult, UpdateResult } from '../t
 class RecipeRA {
     private db: Db;
 
+    public async delete(id: string): Promise<integer | undefined> {
+        const { deletedCount } = await this.db
+            .collection('recipes')
+            .deleteOne({"_id": ObjectID.createFromHexString(id)});
+        return deletedCount;
+    }
+
     public async insert(recipe: NewRecipe): Promise<string> {
         const { insertedId } = await this.db
             .collection('recipes')
