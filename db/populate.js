@@ -125,10 +125,17 @@ db.recipes.insertMany(
         },
         {
             _id: ObjectId("5fbc8fc69cf7d393d946bb8b"),
-            title: "Recipe to be updated",
+            title: "Recipe to be modified",
             author: "System",
             published: "2020-03-01T12:00:00.000Z",
-            recipe: "Recipe to be updated"
+            recipe: "Recipe to be modified"
+        },
+        {
+            _id: ObjectId("5fc018dc9c3d3a3a94a13c68"),
+            title: "Recipe to be deleted",
+            author: "System",
+            published: "2020-03-01T12:00:00.000Z",
+            recipe: "Recipe to be deleted"
         }
     ]
 )

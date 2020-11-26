@@ -4,17 +4,16 @@ const chance = new Chance();
 import config from '../src/config';
 import { Db, DeleteWriteOpResultObject, MongoClient, ObjectId, UpdateWriteOpResult } from "mongodb";
 import { expect } from 'chai';
-import { recipes } from '../db/data/recipes';
-import { NewRecipe, Recipe, SearchResult, UpdateResult } from "../src/types/recipe";
+import { deleteRecipe, mothersId, popeyesId, readRecipes, updateRecipe } from '../db/data/recipes';
+import { DeleteResult, NewRecipe, Recipe, SearchResult, UpdateResult } from "../src/types/recipe";
 import { integer } from "../src/types/integer";
 
 const commonSearchTerm = 'a';
-const mothersId = '5fa8a136a26e5309eeda546b';
-const popeyesId = '5fa8a511460dae6b34c2dee7';
-const updateId = '5fbc8fc69cf7d393d946bb8b';
-const mothersRecipe = recipes.find(recipe => recipe.id === mothersId);
-const popeyesRecipe = recipes.find(recipe => recipe.id === popeyesId);
-const updateRecipe = recipes.find(recipe => recipe.id === updateId);
+const noRecipeId = '5fc0279e3a8b3e44e15fe399';
+const { id: deleteId } = deleteRecipe;
+const { id: updateId } = updateRecipe;
+const mothersRecipe = readRecipes.find(recipe => recipe.id === mothersId);
+const popeyesRecipe = readRecipes.find(recipe => recipe.id === popeyesId);
 const newRecipe = {
     title: 'New Title',
     author: 'New Author',
@@ -27,6 +26,12 @@ const deleteById = function(db: Db, id: string): Promise<DeleteWriteOpResultObje
         .collection('recipes')
         .deleteOne({ _id: new ObjectId(id) });
 }
+const insertById = function(db: Db, recipe: Recipe): Promise<any> {
+    const { id, ...rest } = recipe;
+    return db
+        .collection('recipes')
+        .insertOne({ _id: new ObjectId(id), ...rest });
+}
 const updateById = function(db: Db, id: string, recipe: Recipe): Promise<UpdateWriteOpResult> {
     return db
         .collection('recipes')
@@ -38,6 +43,10 @@ const sortById = function(recipe1: Recipe, recipe2: Recipe): integer {
     if(recipe1.id > recipe2.id)
         return 1;
     return 0;
+}
+const apiDelete = function(id: string): Promise<DeleteResult> {
+    return axios.delete(`http://localhost:8000/delete/${id}`)
+        .then(({ data }) => data);
 }
 const apiInsert = function(recipe: NewRecipe): Promise<string> {
     return axios.post('http://localhost:8000/insert', recipe)
@@ -103,9 +112,9 @@ describe('Read', function() {
 
         it('should search using "like" comparison', async function() {
             const searchResult = await apiSearch(commonSearchTerm);
-            expect(searchResult.count).to.equal(recipes.length);
-            const sortedRecipes = recipes.sort(sortById);
-            const sortedAPIRecipes = recipes.sort(sortById);
+            expect(searchResult.count).to.equal(readRecipes.length);
+            const sortedRecipes = readRecipes.sort(sortById);
+            const sortedAPIRecipes = readRecipes.sort(sortById);
             expect(sortedAPIRecipes).to.eql(sortedRecipes);
         });
 
@@ -114,7 +123,7 @@ describe('Read', function() {
             expect(
                 firstPage.count,
                 'Even though results are paginated, count should be size of full result set'
-            ).to.equal(recipes.length);
+            ).to.equal(readRecipes.length);
             expect(firstPage.recipes).to.have.lengthOf(config.documentsPerPage);
         });
 
@@ -123,8 +132,8 @@ describe('Read', function() {
             expect(
                 secondPage.count,
                 'Even though results are paginated, count should be size of full result set'
-            ).to.equal(recipes.length);
-            const numRemainingRecipes = recipes.length % config.documentsPerPage;
+            ).to.equal(readRecipes.length);
+            const numRemainingRecipes = readRecipes.length % config.documentsPerPage;
             expect(secondPage.recipes).to.have.lengthOf(numRemainingRecipes);
         });
 
@@ -177,25 +186,40 @@ describe('Write', function() {
 
         it('should return that one record was modified if modifying record', async function() {
             try {
-                if (updateRecipe) {
-                    const author = chance.name();
-                    const modifiedRecipe = {
-                        ...updateRecipe,
-                        author
-                    };
-                    const {modifiedCount} = await apiUpdate(modifiedRecipe);
-                    expect(modifiedCount).to.equal(1);
-                } else {
-                    expect(
-                        updateRecipe,
-                        'We were unable to locate the update recipe'
-                    ).to.not.be.undefined;
-                }
+                const author = chance.name();
+                const modifiedRecipe = {
+                    ...updateRecipe,
+                    author
+                };
+                const { modifiedCount } = await apiUpdate(modifiedRecipe);
+                expect(modifiedCount).to.equal(1);
+                expect(
+                    updateRecipe,
+                    'We were unable to locate the update recipe'
+                ).to.not.be.undefined;
             } finally {
                 if(updateRecipe) {
                     await updateById(this.db, updateId, updateRecipe);
                 }
             }
+        });
+
+    });
+
+    describe('Delete', function() {
+
+        it('should delete the record with the specified identifier', async function() {
+            try {
+                const { deletedCount } = await apiDelete(deleteId);
+                expect(deletedCount).to.equal(1);
+            } finally {
+                await insertById(this.db, deleteRecipe);
+            }
+        });
+
+        it('should return 0 when no records match the identifier', async function() {
+            const { deletedCount } = await apiDelete(noRecipeId);
+            expect(deletedCount).to.equal(0);
         });
 
     });

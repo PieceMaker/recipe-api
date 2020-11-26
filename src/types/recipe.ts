@@ -26,6 +26,10 @@ export interface SummaryRecipe extends BaseRecipe {
     id: string;
 }
 
+export interface DeleteResult {
+    deletedCount: integer;
+}
+
 export interface SearchResult {
     count: integer;
     recipes: Recipe[];
