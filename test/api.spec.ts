@@ -4,11 +4,12 @@ const chance = new Chance();
 import config from '../src/config';
 import { Db, DeleteWriteOpResultObject, MongoClient, ObjectId, UpdateWriteOpResult } from "mongodb";
 import { expect } from 'chai';
-import { mothersId, popeyesId, readRecipes, updateRecipe } from '../db/data/recipes';
-import { NewRecipe, Recipe, SearchResult, UpdateResult } from "../src/types/recipe";
+import { deleteRecipe, mothersId, popeyesId, readRecipes, updateRecipe } from '../db/data/recipes';
+import { DeleteResult, NewRecipe, Recipe, SearchResult, UpdateResult } from "../src/types/recipe";
 import { integer } from "../src/types/integer";
 
 const commonSearchTerm = 'a';
+const { id: deleteId } = deleteRecipe;
 const { id: updateId } = updateRecipe;
 const mothersRecipe = readRecipes.find(recipe => recipe.id === mothersId);
 const popeyesRecipe = readRecipes.find(recipe => recipe.id === popeyesId);
@@ -24,6 +25,12 @@ const deleteById = function(db: Db, id: string): Promise<DeleteWriteOpResultObje
         .collection('recipes')
         .deleteOne({ _id: new ObjectId(id) });
 }
+const insertById = function(db: Db, recipe: Recipe): Promise<any> {
+    const { id, ...rest } = recipe;
+    return db
+        .collection('recipes')
+        .insertOne({ _id: new ObjectId(id), ...rest });
+}
 const updateById = function(db: Db, id: string, recipe: Recipe): Promise<UpdateWriteOpResult> {
     return db
         .collection('recipes')
@@ -35,6 +42,10 @@ const sortById = function(recipe1: Recipe, recipe2: Recipe): integer {
     if(recipe1.id > recipe2.id)
         return 1;
     return 0;
+}
+const apiDelete = function(id: string): Promise<DeleteResult> {
+    return axios.delete(`http://localhost:8000/delete/${id}`)
+        .then(({ data }) => data);
 }
 const apiInsert = function(recipe: NewRecipe): Promise<string> {
     return axios.post('http://localhost:8000/insert', recipe)
@@ -179,7 +190,7 @@ describe('Write', function() {
                     ...updateRecipe,
                     author
                 };
-                const {modifiedCount} = await apiUpdate(modifiedRecipe);
+                const { modifiedCount } = await apiUpdate(modifiedRecipe);
                 expect(modifiedCount).to.equal(1);
                 expect(
                     updateRecipe,
@@ -189,6 +200,19 @@ describe('Write', function() {
                 if(updateRecipe) {
                     await updateById(this.db, updateId, updateRecipe);
                 }
+            }
+        });
+
+    });
+
+    describe('Delete', function() {
+
+        it('should delete the record with the specified identifier', async function() {
+            try {
+                const { deletedCount } = await apiDelete(deleteId);
+                expect(deletedCount).to.equal(1);
+            } finally {
+                await insertById(this.db, deleteRecipe);
             }
         });
 
