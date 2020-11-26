@@ -4,17 +4,14 @@ const chance = new Chance();
 import config from '../src/config';
 import { Db, DeleteWriteOpResultObject, MongoClient, ObjectId, UpdateWriteOpResult } from "mongodb";
 import { expect } from 'chai';
-import { recipes } from '../db/data/recipes';
+import { mothersId, popeyesId, readRecipes, updateRecipe } from '../db/data/recipes';
 import { NewRecipe, Recipe, SearchResult, UpdateResult } from "../src/types/recipe";
 import { integer } from "../src/types/integer";
 
 const commonSearchTerm = 'a';
-const mothersId = '5fa8a136a26e5309eeda546b';
-const popeyesId = '5fa8a511460dae6b34c2dee7';
-const updateId = '5fbc8fc69cf7d393d946bb8b';
-const mothersRecipe = recipes.find(recipe => recipe.id === mothersId);
-const popeyesRecipe = recipes.find(recipe => recipe.id === popeyesId);
-const updateRecipe = recipes.find(recipe => recipe.id === updateId);
+const { id: updateId } = updateRecipe;
+const mothersRecipe = readRecipes.find(recipe => recipe.id === mothersId);
+const popeyesRecipe = readRecipes.find(recipe => recipe.id === popeyesId);
 const newRecipe = {
     title: 'New Title',
     author: 'New Author',
@@ -103,9 +100,9 @@ describe('Read', function() {
 
         it('should search using "like" comparison', async function() {
             const searchResult = await apiSearch(commonSearchTerm);
-            expect(searchResult.count).to.equal(recipes.length);
-            const sortedRecipes = recipes.sort(sortById);
-            const sortedAPIRecipes = recipes.sort(sortById);
+            expect(searchResult.count).to.equal(readRecipes.length);
+            const sortedRecipes = readRecipes.sort(sortById);
+            const sortedAPIRecipes = readRecipes.sort(sortById);
             expect(sortedAPIRecipes).to.eql(sortedRecipes);
         });
 
@@ -114,7 +111,7 @@ describe('Read', function() {
             expect(
                 firstPage.count,
                 'Even though results are paginated, count should be size of full result set'
-            ).to.equal(recipes.length);
+            ).to.equal(readRecipes.length);
             expect(firstPage.recipes).to.have.lengthOf(config.documentsPerPage);
         });
 
@@ -123,8 +120,8 @@ describe('Read', function() {
             expect(
                 secondPage.count,
                 'Even though results are paginated, count should be size of full result set'
-            ).to.equal(recipes.length);
-            const numRemainingRecipes = recipes.length % config.documentsPerPage;
+            ).to.equal(readRecipes.length);
+            const numRemainingRecipes = readRecipes.length % config.documentsPerPage;
             expect(secondPage.recipes).to.have.lengthOf(numRemainingRecipes);
         });
 
@@ -177,20 +174,17 @@ describe('Write', function() {
 
         it('should return that one record was modified if modifying record', async function() {
             try {
-                if (updateRecipe) {
-                    const author = chance.name();
-                    const modifiedRecipe = {
-                        ...updateRecipe,
-                        author
-                    };
-                    const {modifiedCount} = await apiUpdate(modifiedRecipe);
-                    expect(modifiedCount).to.equal(1);
-                } else {
-                    expect(
-                        updateRecipe,
-                        'We were unable to locate the update recipe'
-                    ).to.not.be.undefined;
-                }
+                const author = chance.name();
+                const modifiedRecipe = {
+                    ...updateRecipe,
+                    author
+                };
+                const {modifiedCount} = await apiUpdate(modifiedRecipe);
+                expect(modifiedCount).to.equal(1);
+                expect(
+                    updateRecipe,
+                    'We were unable to locate the update recipe'
+                ).to.not.be.undefined;
             } finally {
                 if(updateRecipe) {
                     await updateById(this.db, updateId, updateRecipe);

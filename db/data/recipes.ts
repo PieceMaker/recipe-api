@@ -1,8 +1,11 @@
 import { Recipe } from "../../src/types/recipe";
 
-export const recipes: Recipe[] =  [
+export const mothersId = '5fa8a136a26e5309eeda546b';
+export const popeyesId = '5fa8a511460dae6b34c2dee7';
+
+export const readRecipes: Recipe[] =  [
   {
-    id: "5fa8a136a26e5309eeda546b",
+    id: mothersId,
     title: "Family Recipe",
     author: "Your mom",
     published: "1776-07-04T12:00:00.000Z",
@@ -10,7 +13,7 @@ export const recipes: Recipe[] =  [
     description: "A delectable recipe for a dish your mom always cooks."
   },
   {
-    id: "5fa8a511460dae6b34c2dee7",
+    id: popeyesId,
     title: "Popeye's Spicy Strips",
     author: "Popeye",
     published: "1972-06-12T12:00:00.000Z",
@@ -119,12 +122,13 @@ export const recipes: Recipe[] =  [
     published: "1836-03-02T12:00:00.000Z",
     recipe: "A drink with a 3:2:1 ratio. Three parts good tequila, two parts orange liqueur, one part lime juice. Shake and strain.",
     description: "A perfect drink to enjoy on a spring evening on the porch while watching storms in the distance."
-  },
-  {
-    id: "5fbc8fc69cf7d393d946bb8b",
-    title: "Recipe to be updated",
-    author: "System",
-    published: "2020-03-01T12:00:00.000Z",
-    recipe: "Recipe to be updated"
   }
 ];
+
+export const updateRecipe: Recipe = {
+  id: "5fbc8fc69cf7d393d946bb8b",
+  title: "Recipe to be modified",
+  author: "System",
+  published: "2020-03-01T12:00:00.000Z",
+  recipe: "Recipe to be modified"
+}
