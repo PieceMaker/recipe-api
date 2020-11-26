@@ -5,16 +5,16 @@ import { fromMongoRecipe } from "../engines/formattingEngine";
 
 // Types and Interfaces
 import { integer } from "../types/integer";
-import { MongoRecipe, NewRecipe, Recipe, SearchResult, UpdateResult } from '../types/recipe';
+import { DeleteResult, MongoRecipe, NewRecipe, Recipe, SearchResult, UpdateResult } from '../types/recipe';
 
 class RecipeRA {
     private db: Db;
 
-    public async delete(id: string): Promise<integer | undefined> {
+    public async delete(id: string): Promise<DeleteResult> {
         const { deletedCount } = await this.db
             .collection('recipes')
             .deleteOne({"_id": ObjectID.createFromHexString(id)});
-        return deletedCount;
+        return { deletedCount: deletedCount === undefined ? -1 : deletedCount };
     }
 
     public async insert(recipe: NewRecipe): Promise<string> {
