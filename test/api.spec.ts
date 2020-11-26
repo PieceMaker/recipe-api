@@ -9,6 +9,7 @@ import { DeleteResult, NewRecipe, Recipe, SearchResult, UpdateResult } from "../
 import { integer } from "../src/types/integer";
 
 const commonSearchTerm = 'a';
+const noRecipeId = '5fc0279e3a8b3e44e15fe399';
 const { id: deleteId } = deleteRecipe;
 const { id: updateId } = updateRecipe;
 const mothersRecipe = readRecipes.find(recipe => recipe.id === mothersId);
@@ -214,6 +215,11 @@ describe('Write', function() {
             } finally {
                 await insertById(this.db, deleteRecipe);
             }
+        });
+
+        it('should return 0 when no records match the identifier', async function() {
+            const { deletedCount } = await apiDelete(noRecipeId);
+            expect(deletedCount).to.equal(0);
         });
 
     });
