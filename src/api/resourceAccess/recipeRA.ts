@@ -2,7 +2,7 @@
 import dbManager from '../data/dbManager'
 import { ObjectID } from 'mongodb';
 import config from '../../config';
-import { fromMongoRecipe } from "../engines/formattingEngine";
+import { fromMongoRecord } from "../engines/formattingEngine";
 
 // Types and Interfaces
 import { integer } from "../../types/integer";
@@ -31,7 +31,7 @@ class RecipeRA {
             .collection('recipes')
             .find<MongoRecipe>({"_id": ObjectID.createFromHexString(id)})
             .toArray();
-        return fromMongoRecipe(recipe);
+        return fromMongoRecord(recipe);
     }
 
     public async search(pattern: string, page: integer): Promise<SearchResult> {
@@ -54,7 +54,7 @@ class RecipeRA {
         ]);
         return {
             count,
-            recipes: recipes.map(fromMongoRecipe)
+            recipes: recipes.map(fromMongoRecord)
         };
     }
 
