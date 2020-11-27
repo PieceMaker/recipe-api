@@ -2,7 +2,7 @@
 //
 // mongo localhost:27017/recipes db/create.js
 
-db.createCollection( "recipes", {
+db.createCollection("recipes", {
     validator: {
         $jsonSchema: {
             bsonType: "object",
@@ -20,3 +20,19 @@ db.createCollection( "recipes", {
         }
     }
 });
+
+db.createCollection("users", {
+    validator: {
+        $jsonSchema: {
+            bsonType: "object",
+            required: [ "email", "passwordHash", "created" ],
+            properties: {
+                email: { bsonType: "string" },
+                passwordHash: { bsonType: "string" },
+                created: { bsonType: [ "date", "string" ]}
+            }
+        }
+    }
+});
+
+db.users.createIndex({ email: 1 }, { unique: true });
