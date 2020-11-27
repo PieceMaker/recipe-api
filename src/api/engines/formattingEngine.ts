@@ -1,4 +1,4 @@
-import { MongoRecipe, Recipe } from "../types/recipe";
+import { MongoRecipe, Recipe } from "../../types/recipe";
 
 export function escapePattern (pattern: string): string {
     return pattern.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')

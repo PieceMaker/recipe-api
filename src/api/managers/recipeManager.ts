@@ -3,8 +3,8 @@ import { escapePattern } from "../engines/formattingEngine";
 import recipeRA from '../resourceAccess/recipeRA';
 
 // Interfaces
-import { integer } from "../types/integer";
-import { DeleteResult, NewRecipe, Recipe, SearchResult, UpdateResult } from "../types/recipe";
+import { integer } from "../../types/integer";
+import { DeleteResult, NewRecipe, Recipe, SearchResult, UpdateResult } from "../../types/recipe";
 
 export function insert(recipe: NewRecipe): Promise<string> {
     return recipeRA.insert(recipe);

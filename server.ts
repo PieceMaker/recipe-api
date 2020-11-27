@@ -1,6 +1,6 @@
 import express from 'express';
 
-import {insert, load, remove, search, update} from "./src/managers/recipeManager";
+import {insert, load, remove, search, update} from "./src/api/managers/recipeManager";
 import { NewRecipe, Recipe } from "./src/types/recipe";
 
 const app = express();

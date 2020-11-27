@@ -1,11 +1,11 @@
 // Modules
 import { Db, MongoClient, ObjectID } from 'mongodb';
-import config from '../config';
+import config from '../../config';
 import { fromMongoRecipe } from "../engines/formattingEngine";
 
 // Types and Interfaces
-import { integer } from "../types/integer";
-import { DeleteResult, MongoRecipe, NewRecipe, Recipe, SearchResult, UpdateResult } from '../types/recipe';
+import { integer } from "../../types/integer";
+import { DeleteResult, MongoRecipe, NewRecipe, Recipe, SearchResult, UpdateResult } from '../../types/recipe';
 
 class RecipeRA {
     private db: Db;
