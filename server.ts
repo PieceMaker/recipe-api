@@ -21,7 +21,7 @@ app.get('/load/:id', async (req, res) => {
         const recipe = await load(req.params.id);
         res.status(200).send(recipe);
     } catch(error) {
-        res.status(400).send(error);
+        res.status(400).send(error.message);
     }
 });
 
@@ -31,7 +31,7 @@ app.get('/search/:pattern/:page', async (req, res) => {
         const searchResult = await search(pattern, parseInt(page, 10));
         res.status(200).send(searchResult);
     } catch(error) {
-        res.status(400).send(error);
+        res.status(400).send(error.message);
     }
 });
 
@@ -41,7 +41,7 @@ app.get('/search/:pattern', async (req, res) => {
         const searchResult = await search(pattern, 1);
         res.status(200).send(searchResult);
     } catch(error) {
-        res.status(400).send(error);
+        res.status(400).send(error.message);
     }
 });
 
