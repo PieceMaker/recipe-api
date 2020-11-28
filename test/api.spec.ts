@@ -2,7 +2,8 @@ import axios from 'axios';
 import Chance from 'chance';
 const chance = new Chance();
 import config from '../src/config';
-import { Db, DeleteWriteOpResultObject, MongoClient, ObjectId, UpdateWriteOpResult } from "mongodb";
+import dbManager from "../src/api/data/dbManager";
+import { DeleteWriteOpResultObject, ObjectId, UpdateWriteOpResult } from "mongodb";
 import { expect } from 'chai';
 import { deleteRecipe, mothersId, popeyesId, readRecipes, updateRecipe } from '../db/data/recipes';
 import { DeleteResult, NewRecipe, Recipe, SearchResult, UpdateResult } from "../src/types/recipe";
@@ -21,19 +22,22 @@ const newRecipe = {
     recipe: 'New recipe'
 };
 
-const deleteById = function(db: Db, id: string): Promise<DeleteWriteOpResultObject> {
-    return db
+const deleteById = async function(id: string): Promise<DeleteWriteOpResultObject> {
+    await dbManager.initialized;
+    return dbManager.db
         .collection('recipes')
         .deleteOne({ _id: new ObjectId(id) });
 }
-const insertById = function(db: Db, recipe: Recipe): Promise<any> {
+const insertById = async function(recipe: Recipe): Promise<any> {
+    await dbManager.initialized;
     const { id, ...rest } = recipe;
-    return db
+    return dbManager.db
         .collection('recipes')
         .insertOne({ _id: new ObjectId(id), ...rest });
 }
-const updateById = function(db: Db, id: string, recipe: Recipe): Promise<UpdateWriteOpResult> {
-    return db
+const updateById = async function(id: string, recipe: Recipe): Promise<UpdateWriteOpResult> {
+    await dbManager.initialized;
+    return dbManager.db
         .collection('recipes')
         .updateOne({ _id: new ObjectId(recipe.id) }, { $set: recipe });
 }
@@ -45,24 +49,24 @@ const sortById = function(recipe1: Recipe, recipe2: Recipe): integer {
     return 0;
 }
 const apiDelete = function(id: string): Promise<DeleteResult> {
-    return axios.delete(`http://localhost:8000/delete/${id}`)
+    return axios.delete(`http://localhost:8000/recipe/delete/${id}`)
         .then(({ data }) => data);
 }
 const apiInsert = function(recipe: NewRecipe): Promise<string> {
-    return axios.post('http://localhost:8000/insert', recipe)
+    return axios.post('http://localhost:8000/recipe/insert', recipe)
         .then(({ data }) => data);
 }
 const apiLoad = function(id: string): Promise<Recipe> {
-    return axios.get(`http://localhost:8000/load/${id}`)
+    return axios.get(`http://localhost:8000/recipe/load/${id}`)
         .then(({ data }) => data);
 }
 const apiSearch = function(searchTerm: string | undefined, page?: integer): Promise<SearchResult> {
-    const url = `http://localhost:8000/search/${searchTerm}` + (page ? `/${page}` : '');
+    const url = `http://localhost:8000/recipe/search/${searchTerm}` + (page ? `/${page}` : '');
     return axios.get<SearchResult>(url)
         .then(({ data }) => data);
 }
 const apiUpdate = function(recipe: Recipe): Promise<UpdateResult> {
-    return axios.put<UpdateResult>('http://localhost:8000/update', recipe)
+    return axios.put<UpdateResult>('http://localhost:8000/recipe/update', recipe)
         .then(({ data }) => data);
 }
 
@@ -143,18 +147,6 @@ describe('Read', function() {
 
 describe('Write', function() {
 
-    before(async function() {
-        const db = await new Promise<Db>((resolve, reject) => {
-            MongoClient.connect(config.mongo.url, (error, client) => {
-                if(error) {
-                    reject(error);
-                }
-                resolve(client.db(config.mongo.db));
-            });
-        });
-        this.db = db;
-    });
-
     describe('Insert', function() {
 
         it('should insert a new recipe', async function() {
@@ -162,7 +154,7 @@ describe('Write', function() {
             expect(id).to.have.lengthOf(24);
 
             try {
-                await deleteById(this.db, id);
+                await deleteById(id);
             } catch(error) {
                 // Do nothing
             }
@@ -199,7 +191,7 @@ describe('Write', function() {
                 ).to.not.be.undefined;
             } finally {
                 if(updateRecipe) {
-                    await updateById(this.db, updateId, updateRecipe);
+                    await updateById(updateId, updateRecipe);
                 }
             }
         });
@@ -213,7 +205,7 @@ describe('Write', function() {
                 const { deletedCount } = await apiDelete(deleteId);
                 expect(deletedCount).to.equal(1);
             } finally {
-                await insertById(this.db, deleteRecipe);
+                await insertById(deleteRecipe);
             }
         });
 

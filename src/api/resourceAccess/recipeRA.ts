@@ -1,42 +1,45 @@
 // Modules
-import { Db, MongoClient, ObjectID } from 'mongodb';
-import config from '../config';
-import { fromMongoRecipe } from "../engines/formattingEngine";
+import dbManager from '../data/dbManager'
+import { ObjectID } from 'mongodb';
+import config from '../../config';
+import { fromMongoRecord } from "../engines/formattingEngine";
 
 // Types and Interfaces
-import { integer } from "../types/integer";
-import { DeleteResult, MongoRecipe, NewRecipe, Recipe, SearchResult, UpdateResult } from '../types/recipe';
+import { integer } from "../../types/integer";
+import { DeleteResult, MongoRecipe, NewRecipe, Recipe, SearchResult, UpdateResult } from '../../types/recipe';
 
 class RecipeRA {
-    private db: Db;
-
     public async delete(id: string): Promise<DeleteResult> {
-        const { deletedCount } = await this.db
+        await dbManager.initialized;
+        const { deletedCount } = await dbManager.db
             .collection('recipes')
             .deleteOne({"_id": ObjectID.createFromHexString(id)});
         return { deletedCount: deletedCount === undefined ? -1 : deletedCount };
     }
 
     public async insert(recipe: NewRecipe): Promise<string> {
-        const { insertedId } = await this.db
+        await dbManager.initialized;
+        const { insertedId } = await dbManager.db
             .collection('recipes')
             .insertOne(recipe);
         return insertedId;
     }
 
     public async load(id: string): Promise<Recipe> {
-        const [ recipe ] = await this.db
+        await dbManager.initialized;
+        const [ recipe ] = await dbManager.db
             .collection('recipes')
             .find<MongoRecipe>({"_id": ObjectID.createFromHexString(id)})
             .toArray();
-        return fromMongoRecipe(recipe);
+        return fromMongoRecord(recipe);
     }
 
     public async search(pattern: string, page: integer): Promise<SearchResult> {
+        await dbManager.initialized;
         const likePattern = `.*${pattern}.*`;
         const likePatternRegex = new RegExp(likePattern);
         const rowsToSkip = config.documentsPerPage * (page - 1);
-        const recipesCursor = await this.db
+        const recipesCursor = await dbManager.db
             .collection('recipes')
             .find<MongoRecipe>({
                 "$or": [
@@ -51,36 +54,17 @@ class RecipeRA {
         ]);
         return {
             count,
-            recipes: recipes.map(fromMongoRecipe)
+            recipes: recipes.map(fromMongoRecord)
         };
     }
 
     public async update(id: string, recipe: NewRecipe): Promise<UpdateResult> {
-        const {modifiedCount} = await this.db
+        await dbManager.initialized;
+        const { modifiedCount } = await dbManager.db
             .collection('recipes')
             .updateOne({"_id": ObjectID.createFromHexString(id)}, { $set: recipe });
-        return {modifiedCount};
-    }
-
-    public initialize(): Promise<void> {
-        if(!this.db) {
-            return new Promise<Db>((resolve, reject) => {
-                MongoClient.connect(config.mongo.url, (error, client) => {
-                    if (error) {
-                        reject(error);
-                    }
-                    resolve(client.db(config.mongo.db));
-                });
-            })
-                .then((db) => {
-                    this.db = db;
-                });
-        }
-        return Promise.resolve();
+        return { modifiedCount };
     }
 }
 
-const recipeRA = new RecipeRA();
-recipeRA.initialize();
-
-export default recipeRA;
+export default new RecipeRA();
