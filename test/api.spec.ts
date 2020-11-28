@@ -49,24 +49,24 @@ const sortById = function(recipe1: Recipe, recipe2: Recipe): integer {
     return 0;
 }
 const apiDelete = function(id: string): Promise<DeleteResult> {
-    return axios.delete(`http://localhost:8000/delete/${id}`)
+    return axios.delete(`http://localhost:8000/recipe/delete/${id}`)
         .then(({ data }) => data);
 }
 const apiInsert = function(recipe: NewRecipe): Promise<string> {
-    return axios.post('http://localhost:8000/insert', recipe)
+    return axios.post('http://localhost:8000/recipe/insert', recipe)
         .then(({ data }) => data);
 }
 const apiLoad = function(id: string): Promise<Recipe> {
-    return axios.get(`http://localhost:8000/load/${id}`)
+    return axios.get(`http://localhost:8000/recipe/load/${id}`)
         .then(({ data }) => data);
 }
 const apiSearch = function(searchTerm: string | undefined, page?: integer): Promise<SearchResult> {
-    const url = `http://localhost:8000/search/${searchTerm}` + (page ? `/${page}` : '');
+    const url = `http://localhost:8000/recipe/search/${searchTerm}` + (page ? `/${page}` : '');
     return axios.get<SearchResult>(url)
         .then(({ data }) => data);
 }
 const apiUpdate = function(recipe: Recipe): Promise<UpdateResult> {
-    return axios.put<UpdateResult>('http://localhost:8000/update', recipe)
+    return axios.put<UpdateResult>('http://localhost:8000/recipe/update', recipe)
         .then(({ data }) => data);
 }
 
