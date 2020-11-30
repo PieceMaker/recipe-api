@@ -28,7 +28,7 @@ db.createCollection("users", {
             required: [ "email", "passwordHash", "created" ],
             properties: {
                 email: { bsonType: "string" },
-                passwordHash: { bsonType: "string" },
+                password: { bsonType: "string" },
                 created: { bsonType: [ "date", "string" ]}
             }
         }
