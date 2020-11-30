@@ -1,4 +1,5 @@
 // Modules
+import express from 'express';
 import passport from 'passport';
 import { Strategy as localStrategy } from 'passport-local';
 
@@ -7,6 +8,8 @@ import userManager from "../api/managers/userManager";
 
 // Interfaces
 import { NewUser } from "../types/user";
+
+const router = express.Router();
 
 passport.use(
     'signup',
@@ -28,3 +31,5 @@ passport.use(
         }
     )
 )
+
+export default router;
