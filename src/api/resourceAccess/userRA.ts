@@ -12,6 +12,15 @@ class UserRA {
             .insertOne(user);
         return insertedId;
     }
+
+    public async checkEmailExists(email: string): Promise<boolean> {
+        await dbManager.initialized;
+        const matchingRecordCount = await dbManager.db
+            .collection('users')
+            .find({ email })
+            .count();
+        return matchingRecordCount > 0;
+    }
 }
 
 export default new UserRA();

@@ -1,6 +1,6 @@
 export interface NewUser {
     email: string;
-    passwordHash: string;
+    password: string;
 }
 
 export interface User extends NewUser {

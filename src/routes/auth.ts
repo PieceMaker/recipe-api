@@ -32,4 +32,12 @@ passport.use(
     )
 )
 
+router.put('/create', async (req, res) => {
+    try {
+        const emailInUse = await userManager.checkEmail(req.body.email);
+    } catch(error) {
+        res.status(400).send(error.message);
+    }
+});
+
 export default router;
