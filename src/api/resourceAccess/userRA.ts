@@ -9,7 +9,7 @@ class UserRA {
         await dbManager.initialized;
         const { insertedId } = await dbManager.db
             .collection('users')
-            .insertOne(user);
+            .insertOne({ ...user, created: new Date() });
         return insertedId;
     }
 
