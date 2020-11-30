@@ -1,7 +1,6 @@
 // Modules
 import express from 'express';
-import passport from 'passport';
-import { Strategy as localStrategy } from 'passport-local';
+import { EmailInUse } from "../errors";
 
 // Managers
 import userManager from "../api/managers/userManager";
@@ -11,30 +10,17 @@ import { NewUser } from "../types/user";
 
 const router = express.Router();
 
-passport.use(
-    'signup',
-    new localStrategy(
-        {
-            usernameField: 'email',
-            passwordField: 'password',
-            passReqToCallback: true
-        },
-        async (req, email, password, done) => {
-            try {
-                const user: NewUser = req.body;
-                const userId = await userManager.insert(user);
-                done(null, { userId });
-            } catch(error) {
-                // Add error regarding user already existing
-                done(error);
-            }
-        }
-    )
-)
-
-router.put('/create', async (req, res) => {
+router.put('/signUp', async (req, res) => {
     try {
-        const emailInUse = await userManager.checkEmail(req.body.email);
+        const user: NewUser = req.body;
+        const { email } = user;
+        const emailInUse = await userManager.checkEmail(email);
+        if(emailInUse) {
+            res.status(400).send(new EmailInUse(email));
+        } else {
+            const userId = await userManager.insert(user);
+            res.status(200).send({ userId });
+        }
     } catch(error) {
         res.status(400).send(error.message);
     }
