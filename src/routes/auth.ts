@@ -10,7 +10,7 @@ import { NewUser } from "../types/user";
 
 const router = express.Router();
 
-router.put('/signUp', async (req, res) => {
+router.post('/signUp', async (req, res) => {
     try {
         const user: NewUser = req.body;
         const { email } = user;
