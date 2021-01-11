@@ -13,9 +13,11 @@ export interface NewUser extends BaseUser {
 export interface User extends BaseUser {
     id: string;
     created: Date | string;
+    passwordHash: string;
 }
 
-export interface MongoUser extends NewUser {
+export interface MongoUser extends BaseUser {
     _id: string;
     created: Date | string;
+    passwordHash: string;
 }

@@ -1,3 +1,6 @@
+import bcrypt from 'bcrypt';
+import config from '../../config';
+
 // Managers
 import dbManager from "../data/dbManager";
 
@@ -7,9 +10,17 @@ import { NewUser } from "../../types/user";
 class UserRA {
     public async insert(user: NewUser): Promise<string> {
         await dbManager.initialized;
+        const passwordHash = await bcrypt.hash(user.password, config.salt);
+        const dbUser = {
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            passwordHash,
+            username: user.username
+        };
         const { insertedId } = await dbManager.db
             .collection('users')
-            .insertOne({ ...user, created: (new Date()).toISOString() });
+            .insertOne({ ...dbUser, created: (new Date()).toISOString() });
         return insertedId;
     }
 
