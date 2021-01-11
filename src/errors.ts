@@ -15,6 +15,19 @@ export class EmailInUse extends Error {
     }
 }
 
+export class PasswordMismatch extends Error {
+    constructor() {
+        super('Password must match repeated password.');
+    }
+
+    toJSON() {
+        return {
+            message: this.message,
+            name: 'PasswordMismatch'
+        }
+    }
+}
+
 export class UsernameInUse extends Error {
     public username: string;
 

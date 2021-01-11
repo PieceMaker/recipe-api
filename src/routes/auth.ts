@@ -1,6 +1,6 @@
 // Modules
 import express from 'express';
-import { EmailInUse, UsernameInUse } from "../errors";
+import { EmailInUse, PasswordMismatch, UsernameInUse } from "../errors";
 
 // Managers
 import userManager from "../api/managers/userManager";
@@ -13,12 +13,15 @@ const router = express.Router();
 router.post('/register', async (req, res) => {
     try {
         const user: NewUser = req.body;
-        const { email, username } = user;
+        const { email, password, repeatPassword, username } = user;
+        const passwordsMatch = password === repeatPassword;
         const [ emailInUse, usernameInUse ] = await Promise.all([
             userManager.checkEmail(email),
             userManager.checkUsername(username)
         ]);
-        if(usernameInUse) {
+        if(!passwordsMatch) {
+            res.status(400).send(new PasswordMismatch());
+        } else if(usernameInUse) {
             res.status(400).send(new UsernameInUse(username));
         } else if(emailInUse) {
             res.status(400).send(new EmailInUse(email));
