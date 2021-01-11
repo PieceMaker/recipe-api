@@ -1,9 +1,16 @@
-export interface NewUser {
+export interface BaseUser {
     email: string;
-    password: string;
+    firstName: string;
+    lastName: string;
+    userName: string;
 }
 
-export interface User extends NewUser {
+export interface NewUser extends BaseUser {
+    password: string;
+    repeatPassword: string;
+}
+
+export interface User extends BaseUser {
     id: string;
     created: Date | string;
 }
