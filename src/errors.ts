@@ -14,3 +14,20 @@ export class EmailInUse extends Error {
         };
     }
 }
+
+export class UsernameInUse extends Error {
+    public username: string;
+
+    constructor(username: string) {
+        super('Username already in use.');
+        this.username = username;
+    }
+
+    toJSON() {
+        return {
+            username: this.username,
+            message: this.message,
+            name: 'UsernameInUse'
+        };
+    }
+}

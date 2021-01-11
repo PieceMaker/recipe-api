@@ -2,7 +2,7 @@ export interface BaseUser {
     email: string;
     firstName: string;
     lastName: string;
-    userName: string;
+    username: string;
 }
 
 export interface NewUser extends BaseUser {

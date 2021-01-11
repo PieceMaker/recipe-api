@@ -21,6 +21,15 @@ class UserRA {
             .count();
         return matchingRecordCount > 0;
     }
+
+    public async checkUsernameExists(username: string): Promise<boolean> {
+        await dbManager.initialized;
+        const matchingRecordCount = await dbManager.db
+            .collection('users')
+            .find({ username })
+            .count();
+        return matchingRecordCount > 0;
+    }
 }
 
 export default new UserRA();
