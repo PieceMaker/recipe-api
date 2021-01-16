@@ -4,5 +4,5 @@ export default {
         db: 'recipes'
     },
     documentsPerPage: 10,
-    salt: "dismytemporarysalt"
+    saltRounds: 14
 };
