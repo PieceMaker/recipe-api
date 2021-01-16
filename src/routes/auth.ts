@@ -5,6 +5,9 @@ import { EmailInUse, PasswordMismatch, UsernameInUse } from "../errors";
 // Managers
 import userManager from "../api/managers/userManager";
 
+// Engines
+import { errorToJSON } from "../api/engines/formattingEngine";
+
 // Interfaces
 import { NewUser } from "../types/user";
 
@@ -20,17 +23,21 @@ router.post('/register', async (req, res) => {
             userManager.checkUsername(username)
         ]);
         if(!passwordsMatch) {
-            res.status(400).send(new PasswordMismatch());
+            throw new PasswordMismatch();
         } else if(usernameInUse) {
-            res.status(400).send(new UsernameInUse(username));
+            throw new UsernameInUse(username);
         } else if(emailInUse) {
-            res.status(400).send(new EmailInUse(email));
+            throw new EmailInUse(email);
         } else {
             const userId = await userManager.insert(user);
             res.status(200).send({ userId });
         }
     } catch(error) {
-        res.status(400).send(error.message);
+        if(error.toJSON) {
+            res.status(400).json(error);
+        } else {
+            res.status(500).json(errorToJSON(error));
+        }
     }
 });
 

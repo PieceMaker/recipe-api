@@ -1,5 +1,12 @@
 import { mongoRecord, record } from "../../types/record";
 
+export function errorToJSON(error: Error) {
+    return {
+        message: error.message,
+        name: error.name
+    };
+}
+
 export function escapePattern (pattern: string): string {
     return pattern.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')
 }
