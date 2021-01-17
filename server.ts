@@ -1,11 +1,16 @@
+// Modules
 import express from 'express';
-
-import recipe from './src/routes/recipe';
 
 const app = express();
 const port = 8000;
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Routes
+import auth from './src/routes/auth';
+import recipe from './src/routes/recipe';
+app.use('/auth', auth);
 app.use('/recipe', recipe);
 
 ////////
