@@ -34,13 +34,13 @@ function setupLocalStrategy() {
             const { passwordHash, ...rest } = await userManager.getUser(username);
             const passwordIsValid = await verifyPassword(password, passwordHash);
             if(!passwordIsValid) {
-                return done('Incorrect Username / Password', false);
+                return done(null, false);
             } else {
                 return done(null, { ...rest });
             }
         } catch(error) {
             if(error instanceof UserNotFound) {
-                return done('Incorrect Username / Password', false);
+                return done(null, false);
             }
             return done(error, false);
         }
