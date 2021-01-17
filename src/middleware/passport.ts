@@ -12,11 +12,14 @@ import { verifyPassword } from "../api/engines/passwordEngine";
 // Errors
 import { UserNotFound } from "../errors";
 
+// Interfaces
+import { User } from "../types/user";
+
 function setupJWTStrategy() {
     passport.use('jwt', new JWTStrategy({
         jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-        secretOrKey: config.jwtSecret,
-        algorithms: [ 'RS256' ]
+        secretOrKey: config.jwt.secret,
+        algorithms: [ config.jwt.algorithm ]
     }, (jwtPayload, done) => {
         if(Date.now() > jwtPayload.expires) {
             return done('JWT Expired', false);
@@ -36,7 +39,8 @@ function setupLocalStrategy() {
             if(!passwordIsValid) {
                 return done(null, false);
             } else {
-                return done(null, { ...rest });
+                const user: User = { ...rest };
+                return done(null, user);
             }
         } catch(error) {
             if(error instanceof UserNotFound) {
