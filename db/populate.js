@@ -144,7 +144,7 @@ db.users.insertMany(
     [
         {
             _id: ObjectId("6003d6d60e0dfd01a73ee3c0"),
-            created: 'published: \"2021-01-01T12:00:00.000Z\"',
+            created: '2021-01-01T12:00:00.000Z',
             email: 'test@user.org',
             firstName: 'Test',
             lastName: 'User',
