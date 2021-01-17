@@ -3,6 +3,7 @@ import userRA from "../resourceAccess/userRA";
 
 // Engines
 import { fromMongoRecord } from "../engines/formattingEngine";
+import { hashPassword } from "../engines/passwordEngine";
 
 // Errors
 import { UserNotFound } from "../../errors";
@@ -27,8 +28,9 @@ class UserManager {
         return fromMongoRecord<MongoUser>(mongoUser);
     }
 
-    public insert(user: NewUser): Promise<string> {
-        return userRA.insert(user);
+    public async insert(user: NewUser): Promise<string> {
+        const passwordHash = await hashPassword(user.password);
+        return userRA.insert(user, passwordHash);
     }
 }
 
