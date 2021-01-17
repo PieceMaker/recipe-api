@@ -4,5 +4,6 @@ export default {
         db: 'recipes'
     },
     documentsPerPage: 10,
+    jwtSecret: 'MyTemp0r4ryS3cret',
     saltRounds: 14
 };

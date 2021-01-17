@@ -13,6 +13,10 @@ import recipe from './src/routes/recipe';
 app.use('/auth', auth);
 app.use('/recipe', recipe);
 
+// Setup middleware
+import { setupStrategies } from "./src/middleware/passport";
+setupStrategies();
+
 ////////
 // GET
 ////////
