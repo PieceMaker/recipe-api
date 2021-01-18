@@ -28,46 +28,50 @@ const deleteNewUser = async function(): Promise<DeleteWriteOpResultObject> {
         .deleteOne({ username: newUser.username });
 }
 
-describe('Register', function() {
+describe('Authorization', function() {
 
-    it('should throw a "PasswordMismatch" error when the passwords do not match', async function() {
-        const mismatchingPasswordUser = { ...newUser };
-        mismatchingPasswordUser.repeatPassword = mismatchingPasswordUser.password + 'd';
-        const { data, status } = await authRegister(mismatchingPasswordUser);
-        expect(status).to.equal(400);
-        expect(data).to.have.all.keys([ 'message', 'name' ]);
-        expect(data.name).to.equal('PasswordMismatch');
-    });
+    describe('Register', function () {
 
-    it('should throw an "EmailInUse" error when the email matches an existing one', async function() {
-        const matchingEmailUser = { ...newUser };
-        matchingEmailUser.email = existingUser.email;
-        const { data, status } = await authRegister(matchingEmailUser);
-        expect(status).to.equal(400);
-        expect(data).to.have.all.keys([ 'email', 'message', 'name' ]);
-        expect(data.name).to.equal('EmailInUse');
-        expect(data.email).to.equal(existingUser.email);
-    });
+        it('should throw a "PasswordMismatch" error when the passwords do not match', async function () {
+            const mismatchingPasswordUser = {...newUser};
+            mismatchingPasswordUser.repeatPassword = mismatchingPasswordUser.password + 'd';
+            const {data, status} = await authRegister(mismatchingPasswordUser);
+            expect(status).to.equal(400);
+            expect(data).to.have.all.keys(['message', 'name']);
+            expect(data.name).to.equal('PasswordMismatch');
+        });
 
-    it('should throw a "UsernameInUse" error when the username matches an existing one', async function() {
-        const matchingUsernameUser = { ...newUser };
-        matchingUsernameUser.username = existingUser.username;
-        const { data, status } = await authRegister(matchingUsernameUser);
-        expect(status).to.equal(400);
-        expect(data).to.have.all.keys([ 'message', 'name', 'username' ]);
-        expect(data.name).to.equal('UsernameInUse');
-        expect(data.username).to.equal(existingUser.username);
-    });
+        it('should throw an "EmailInUse" error when the email matches an existing one', async function () {
+            const matchingEmailUser = {...newUser};
+            matchingEmailUser.email = existingUser.email;
+            const {data, status} = await authRegister(matchingEmailUser);
+            expect(status).to.equal(400);
+            expect(data).to.have.all.keys(['email', 'message', 'name']);
+            expect(data.name).to.equal('EmailInUse');
+            expect(data.email).to.equal(existingUser.email);
+        });
 
-    it('should return the inserted user identifier when successfully registering', async function() {
-        const { data, status } = await authRegister(newUser);
-        expect(status).to.equal(200);
-        expect(data).to.have.all.keys([ 'userId' ]);
-        expect(data.userId).to.be.a('string');
-    });
+        it('should throw a "UsernameInUse" error when the username matches an existing one', async function () {
+            const matchingUsernameUser = {...newUser};
+            matchingUsernameUser.username = existingUser.username;
+            const {data, status} = await authRegister(matchingUsernameUser);
+            expect(status).to.equal(400);
+            expect(data).to.have.all.keys(['message', 'name', 'username']);
+            expect(data.name).to.equal('UsernameInUse');
+            expect(data.username).to.equal(existingUser.username);
+        });
 
-    after(async function() {
-        await deleteNewUser();
+        it('should return the inserted user identifier when successfully registering', async function () {
+            const {data, status} = await authRegister(newUser);
+            expect(status).to.equal(200);
+            expect(data).to.have.all.keys(['userId']);
+            expect(data.userId).to.be.a('string');
+        });
+
+        after(async function () {
+            await deleteNewUser();
+        });
+
     });
 
 });
