@@ -69,6 +69,7 @@
   "include": [
     "@types/express.d.ts",
     "src/**/*",
-    "tests/**/*"
+    "tests/**/*",
+    "server.ts"
   ]
 }
