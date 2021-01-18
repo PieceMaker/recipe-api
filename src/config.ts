@@ -4,5 +4,10 @@ export default {
         db: 'recipes'
     },
     documentsPerPage: 10,
+    jwt: {
+        algorithm: 'HS256',
+        expiresIn: '1d',
+        secret: 'MyTemp0r4ryS3cret'
+    },
     saltRounds: 14
 };

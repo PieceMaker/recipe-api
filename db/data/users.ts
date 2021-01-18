@@ -1,6 +1,6 @@
-import { User } from "../../src/types/user";
+import { UserWithHash } from "../../src/types/user";
 
-export const existingUser: User = {
+export const existingUser: UserWithHash = {
     id: '6003d6d60e0dfd01a73ee3c0',
     created: '2021-01-01T12:00:00.000Z',
     email: 'test@user.org',

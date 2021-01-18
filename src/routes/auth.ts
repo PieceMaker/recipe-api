@@ -1,5 +1,6 @@
 // Modules
 import express from 'express';
+import passport from "passport";
 import { EmailInUse, PasswordMismatch, UsernameInUse } from "../errors";
 
 // Managers
@@ -7,6 +8,7 @@ import userManager from "../api/managers/userManager";
 
 // Engines
 import { errorToJSON } from "../api/engines/formattingEngine";
+import { issueJWT } from "../api/engines/jwtEngine";
 
 // Interfaces
 import { NewUser } from "../types/user";
@@ -40,5 +42,17 @@ router.post('/register', async (req, res) => {
         }
     }
 });
+
+router.post(
+    '/login',
+    passport.authenticate('local', { session: false }),
+    (req, res) => {
+        if(req.user) {
+            res.status(200).send(issueJWT(req.user));
+        } else {
+            res.status(401).send('Invalid Username/Password');
+        }
+    }
+);
 
 export default router;

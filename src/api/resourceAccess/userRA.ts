@@ -1,16 +1,12 @@
-import bcrypt from 'bcrypt';
-import config from '../../config';
-
 // Managers
 import dbManager from "../data/dbManager";
 
 // Types and Interfaces
-import { BaseUser, NewUser } from "../../types/user";
+import { BaseUser, MongoUser } from "../../types/user";
 
 class UserRA {
-    public async insert(user: NewUser): Promise<string> {
+    public async insert(user: BaseUser, passwordHash: string): Promise<string> {
         await dbManager.initialized;
-        const passwordHash = await bcrypt.hash(user.password, config.saltRounds);
         const dbUser: BaseUser & { passwordHash: string } = {
             email: user.email,
             firstName: user.firstName,
@@ -40,6 +36,13 @@ class UserRA {
             .find({ username })
             .count();
         return matchingRecordCount > 0;
+    }
+
+    public async getUser(username: string): Promise<MongoUser | null> {
+        await dbManager.initialized;
+        return dbManager.db
+            .collection('users')
+            .findOne<MongoUser>({ username });
     }
 }
 

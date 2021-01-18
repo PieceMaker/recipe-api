@@ -13,6 +13,9 @@ export interface NewUser extends BaseUser {
 export interface User extends BaseUser {
     id: string;
     created: Date | string;
+}
+
+export interface UserWithHash extends User {
     passwordHash: string;
 }
 

@@ -44,3 +44,20 @@ export class UsernameInUse extends Error {
         };
     }
 }
+
+export class UserNotFound extends Error {
+    public username: string;
+
+    constructor(username: string) {
+        super('User not found.');
+        this.username = username;
+    }
+
+    toJSON() {
+        return {
+            username: this.username,
+            message: this.message,
+            name: 'UserNotFound'
+        };
+    }
+}
