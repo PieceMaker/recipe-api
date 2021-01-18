@@ -13,6 +13,7 @@ import { verifyPassword } from "../api/engines/passwordEngine";
 import { UserNotFound } from "../errors";
 
 // Interfaces
+import { JWTPayload } from "../types/jwt";
 import { User } from "../types/user";
 
 function setupJWTStrategy() {
@@ -20,11 +21,8 @@ function setupJWTStrategy() {
         jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
         secretOrKey: config.jwt.secret,
         algorithms: [ config.jwt.algorithm ]
-    }, (jwtPayload, done) => {
-        if(Date.now() > jwtPayload.expires) {
-            return done('JWT Expired', false);
-        }
-        return done(null, jwtPayload);
+    }, ({ user }: JWTPayload, done) => {
+        return done(null, user);
     }));
 }
 
